@@ -53,14 +53,20 @@ namespace CitiesManager.WebAPI.Controllers
         // PUT: api/Cities/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCity(Guid id, City city)
+        public async Task<IActionResult> PutCity(Guid id,[Bind(nameof(City.CityID), nameof(City.CityName))] City city)
         {
             if (id != city.CityID)
             {
                 return BadRequest();
             }
+            //Putting the state as modified
+            //_context.Entry(city).State = EntityState.Modified; this is dangerous because will try to update the whole row instead of few values
 
-            _context.Entry(city).State = EntityState.Modified;
+            var existingCity = await _context.Cities.FindAsync(id);
+            if (existingCity == null)
+                return NotFound();
+            //Assign the value
+            existingCity.CityName = city.CityName;
 
             try
             {
@@ -69,13 +75,8 @@ namespace CitiesManager.WebAPI.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!CityExists(id))
-                {
                     return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -84,7 +85,7 @@ namespace CitiesManager.WebAPI.Controllers
         // POST: api/Cities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<City>> PostCity(City city)
+        public async Task<ActionResult<City>> PostCity([Bind(nameof(City.CityName), nameof(City.CityID))] City city)
         {
           if (_context.Cities == null)
           {
