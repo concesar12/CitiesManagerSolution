@@ -15,7 +15,12 @@ builder.Services.AddControllers(options => {
 //Adding versioning
 builder.Services.AddApiVersioning(config =>
 {
-    config.ApiVersionReader = new UrlSegmentApiVersionReader(); //Reads version number from request url at "apiVersion" constraint
+    //config.ApiVersionReader = new UrlSegmentApiVersionReader(); //Reads version number from request url at "apiVersion" constraint
+    config.ApiVersionReader = new QueryStringApiVersionReader(); //Reads version number from request query string called "api-version". Eg: api-version=1.0
+    //config.ApiVersionReader = new HeaderApiVersionReader("api-version"); //Reads version number from request header called "api-version". Eg: api-version: 1.0
+ 
+     config.DefaultApiVersion = new ApiVersion(1, 0); // This is to set the default version
+     config.AssumeDefaultVersionWhenUnspecified = true;
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
