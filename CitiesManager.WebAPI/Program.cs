@@ -1,11 +1,16 @@
 using CitiesManager.WebAPI.DatabaseContext;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// This is because we are not going to create views in this project
+builder.Services.AddControllers(options => {
+    options.Filters.Add(new ProducesAttribute("application/json"));
+    options.Filters.Add(new ConsumesAttribute("application/json"));
+}).AddXmlSerializerFormatters(); //This XML is because we added a XML in the controller
 
-builder.Services.AddControllers(); // This is because we are not going to create views in this project
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
