@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { City } from '../models/city';
+import { CitiesService } from '../services/cities.service';
 
 @Component({
   selector: 'app-cities',
@@ -6,5 +8,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./cities.component.css']
 })
 export class CitiesComponent {
+  cities: City[] = [];
 
+  constructor(private citiesService: CitiesService) {
+  }
+  //Aplication startup
+  ngOnInit() {
+    this.cities = this.citiesService.getCities();
+  }
 }
