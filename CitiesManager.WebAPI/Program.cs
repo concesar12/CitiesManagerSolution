@@ -42,6 +42,14 @@ builder.Services.AddVersionedApiExplorer(options => {
     options.SubstituteApiVersionInUrl = true;
 });
 
+//Add the CORS for Angular app CORS: localhost:4200 port number of angular application
+builder.Services.AddCors(options => {
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:4200");
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,6 +63,8 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v2/swagger.json", "2.0");
 }); // creates swagger UI for testing all Web API endpoints / action methods
 
+app.UseRouting();
+app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
