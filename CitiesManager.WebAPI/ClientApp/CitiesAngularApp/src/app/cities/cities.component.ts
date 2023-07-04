@@ -14,6 +14,20 @@ export class CitiesComponent {
   }
   //Aplication startup
   ngOnInit() {
-    this.cities = this.citiesService.getCities();
+    this.citiesService.getCities()
+      .subscribe({
+
+        next: (response: City[]) => {
+          this.cities = response;
+        },
+
+        error: (error: any) => {
+          console.log(error)
+        },
+
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        complete: () => { }
+      });
+
   }
 }
