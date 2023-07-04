@@ -44,9 +44,9 @@ builder.Services.AddVersionedApiExplorer(options => {
 
 //Add the CORS for Angular app CORS: localhost:4200 port number of angular application
 builder.Services.AddCors(options => {
-    options.AddDefaultPolicy(builder =>
+    options.AddDefaultPolicy(policyBuilder =>
     {
-        builder.WithOrigins("http://localhost:4200");
+        policyBuilder.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>());
     });
 });
 
