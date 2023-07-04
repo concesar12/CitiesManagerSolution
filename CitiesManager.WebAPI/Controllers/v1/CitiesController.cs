@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CitiesManager.WebAPI.DatabaseContext;
 using CitiesManager.WebAPI.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace CitiesManager.WebAPI.Controllers.v1
 {
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
+    //[EnableCors("4100Client")]
     public class CitiesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

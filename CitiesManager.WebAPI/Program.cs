@@ -46,7 +46,20 @@ builder.Services.AddVersionedApiExplorer(options => {
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(policyBuilder =>
     {
-        policyBuilder.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>());
+        policyBuilder
+        .WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>())
+        .WithHeaders("Authorization", "origin", "accept", "content-type")
+        .WithMethods("GET", "POST", "PUT", "DELETE"); //Operations allowed
+
+    });
+
+    options.AddPolicy("4100Client", policyBuilder =>
+    {
+        policyBuilder
+        .WithOrigins(builder.Configuration.GetSection("AllowedOrigins2").Get<string[]>())
+        .WithHeaders("Authorization", "origin", "accept")
+        .WithMethods("GET"); //Operations allowed
+
     });
 });
 
