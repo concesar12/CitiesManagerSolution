@@ -26,7 +26,7 @@
 
               <button class="button button-blue-back" (click)="updateClicked(i)" *ngIf="city.cityID == editCityID" type="submit">Update</button>
 
-              <button class="button button-red-back" (click)="deleteClicked(city, i)" *ngIf="city.cityID == editCityID" type="button">Delete</button>
+              <button class="button button-red-back ml" (click)="deleteClicked(city, i)" *ngIf="city.cityID != editCityID" type="button">Delete</button>
 
             </td>
           </tr>
