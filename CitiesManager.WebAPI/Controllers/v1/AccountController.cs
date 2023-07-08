@@ -25,7 +25,7 @@ namespace CitiesManager.WebAPI.Controllers.v1
         }
 
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<ApplicationUser>> PostRegister(RegisterDTO registerDTO)
         {
             //Validation
