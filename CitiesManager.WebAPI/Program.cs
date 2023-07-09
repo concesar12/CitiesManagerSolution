@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using CitiesManager.Core.ServiceContracts;
 using CitiesManager.Core.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options => {
     options.Filters.Add(new ProducesAttribute("application/json"));
     options.Filters.Add(new ConsumesAttribute("application/json"));
+
+    //Authorization policy
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
 }).AddXmlSerializerFormatters(); //This XML is because we added a XML in the controller
 
 //Adding jwt service
@@ -83,6 +91,28 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options => {
  .AddDefaultTokenProviders()
  .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
  .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
+
+//JWT
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+ .AddJwtBearer(options => {
+     options.TokenValidationParameters = new TokenValidationParameters()
+     {
+         ValidateAudience = true,
+         ValidAudience = builder.Configuration["Jwt:Audience"],
+         ValidateIssuer = true,
+         ValidIssuer = builder.Configuration["Jwt:Issuer"],
+         ValidateLifetime = true,
+         ValidateIssuerSigningKey = true,
+         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+     };
+ });
+
+builder.Services.AddAuthorization(options => {
+});
 
 var app = builder.Build();
 
