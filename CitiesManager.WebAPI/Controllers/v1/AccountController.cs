@@ -42,9 +42,9 @@ namespace CitiesManager.WebAPI.Controllers.v1
             //Create user
             ApplicationUser user = new ApplicationUser()
             {
-                Email = registerDTO.EmailAddress,
+                Email = registerDTO.Email,
                 PhoneNumber = registerDTO.PhoneNumber,
-                UserName = registerDTO.EmailAddress,
+                UserName = registerDTO.Email,
                 PersonName = registerDTO.PersonName
             };
 

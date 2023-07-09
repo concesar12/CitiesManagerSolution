@@ -16,7 +16,7 @@ namespace CitiesManager.Core.DTO
         [Required(ErrorMessage = "Email can't be blank")]
         [EmailAddress(ErrorMessage = "Email should be in a proper email address format")]
         [Remote(action: "IsEmailAlreadyRegistered", controller: "Account", ErrorMessage = "Email is already in use")]
-        public string EmailAddress { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Phone number can't be blank")]
         [RegularExpression("^[0-9]*$", ErrorMessage = "Phone number should contain digits only")]
