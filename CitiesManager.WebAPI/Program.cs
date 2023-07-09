@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using CitiesManager.Core.ServiceContracts;
+using CitiesManager.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,9 @@ builder.Services.AddControllers(options => {
     options.Filters.Add(new ProducesAttribute("application/json"));
     options.Filters.Add(new ConsumesAttribute("application/json"));
 }).AddXmlSerializerFormatters(); //This XML is because we added a XML in the controller
+
+//Adding jwt service
+builder.Services.AddTransient<IJwtService, JwtService>();
 
 //Adding versioning
 builder.Services.AddApiVersioning(config =>
