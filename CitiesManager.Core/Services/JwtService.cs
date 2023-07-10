@@ -37,7 +37,9 @@ namespace CitiesManager.Core.Services
                  new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //JWT unique ID
                  new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()), //Issued at (date and time of token generation)
                  new Claim(ClaimTypes.NameIdentifier, user.Email), //Unique name identifier of the user (Email)
-                 new Claim(ClaimTypes.Name, user.PersonName) //Name of the user
+                 new Claim(ClaimTypes.Name, user.PersonName), //Name of the user,
+                 new Claim(ClaimTypes.Email, user.Email) //email of the user,
+
                  };
 
             // Create a SymmetricSecurityKey object using the key specified in the configuration.
@@ -78,6 +80,33 @@ namespace CitiesManager.Core.Services
             var randomNumberGenerator = RandomNumberGenerator.Create();// recomended with no new
             randomNumberGenerator.GetBytes(bytes);
             return Convert.ToBase64String(bytes);
+        }
+
+        public ClaimsPrincipal? GetPrincipalFromJwtToken(string? token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateAudience = true,
+                ValidAudience = _configuration["Jwt:Audience"],
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["Jwt:Issuer"],
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
+                //This is because the token is expired
+                ValidateLifetime = false //should be false
+            };
+
+            JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+
+            ClaimsPrincipal principal = jwtSecurityTokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+
+            return principal;
         }
 
     }
